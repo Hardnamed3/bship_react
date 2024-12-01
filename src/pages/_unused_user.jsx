@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import reactLogo from './assets/react.svg'
+import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
+import '../styles/_unused_original.css'
 
 function App() {
     const [message, setMessage] = useState('');
     const [response, setResponse] = useState('');
     const [messages, setMessages] = useState([]);
 
-    
+    const userId = 1;
 
     // Fetch messages on initial load
     useEffect(() => {
@@ -18,10 +18,10 @@ function App() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:8080/api/hello', {
+            const res = await fetch('http://localhost:8080/messages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message }),
+                body: JSON.stringify({ message, user_id: userId }),
             });
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
@@ -36,7 +36,7 @@ function App() {
     // Function to fetch all messages from the backend
     const fetchMessages = async () => {
         try {
-            const res = await fetch('http://localhost:8080/api/messages', {
+            const res = await fetch('http://localhost:8080/messages', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -48,6 +48,7 @@ function App() {
             alert('Failed to fetch messages');
         }
     };
+
 
     return (
         <div>

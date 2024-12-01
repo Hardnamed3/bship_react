@@ -1,0 +1,15 @@
+/* Home.module.css */
+.list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.listItem {
+    margin: 10px 0;
+}
+
+.button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+}
