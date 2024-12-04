@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import PropTypes from "prop-types";
 import {useNavigate} from "react-router-dom";
+import {apiBase} from "../config/api.js";
 
 const Profile = ({ user, setUser }) => {
     Profile.propTypes = {
@@ -19,7 +20,7 @@ const Profile = ({ user, setUser }) => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`http://localhost:8081/users/${user.userId}`, {
+            const res = await fetch(`${apiBase}/users/${user.userId}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(profile),
@@ -40,7 +41,7 @@ const Profile = ({ user, setUser }) => {
 
     const handleDelete = async () => {
         try {
-            const res = await fetch(`http://localhost:8081/users/${user.userId}`, {
+            const res = await fetch(`${apiBase}/users/${user.userId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             });

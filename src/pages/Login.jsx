@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import PropTypes from "prop-types";
+import {apiBase} from "../config/api.js";
 
 const Login = ({ setUser }) => {
     Login.propTypes = {
@@ -13,7 +14,7 @@ const Login = ({ setUser }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:8081/login', {
+            const res = await fetch(`${apiBase}/users/login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 //body: JSON.stringify({username, password}),

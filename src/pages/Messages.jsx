@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {useNavigate} from "react-router-dom";
+import {apiBase} from "../config/api.js";
 
 const Messages = ({ user }) => {
     Messages.propTypes = {
@@ -28,7 +29,7 @@ const Messages = ({ user }) => {
 
     const fetchMessages = async () => {
         try {
-            const res = await fetch(`http://localhost:8080/messages/user/${user.userId}`, {
+            const res = await fetch(`${apiBase}/messages/user/${user.userId}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -52,7 +53,7 @@ const Messages = ({ user }) => {
 
     const handleCreateMessage = async () => {
         try {
-            const res = await fetch('http://localhost:8080/messages', {
+            const res = await fetch(`${apiBase}/messages`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: newMessageContent, user_id: user.userId }),
@@ -78,7 +79,7 @@ const Messages = ({ user }) => {
 
     const handleEdit = async () => {
         try {
-            const res = await fetch(`http://localhost:8080/messages/${editingMessageId}`, {
+            const res = await fetch(`${apiBase}/messages/${editingMessageId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: editMessageContent, user_id: user.userId }),
@@ -107,7 +108,7 @@ const Messages = ({ user }) => {
 
     const handleDelete = async (messageId) => {
         try {
-            const res = await fetch(`http://localhost:8080/messages/${messageId}`, {
+            const res = await fetch(`${apiBase}/messages/${messageId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             });

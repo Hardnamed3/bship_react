@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from "prop-types";
+import {apiBase} from "../config/api.js";
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -10,7 +11,7 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:8081/users', {
+            const res = await fetch(`${apiBase}/users`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 //body: JSON.stringify({username, email, password}),

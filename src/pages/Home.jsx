@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import homeStyles from '../styles/Home.module.css';
 import PropTypes from "prop-types";
+import { apiBase } from '../config/api.js';
 
 const Home = ({ user, setUser }) => {
     Home.propTypes = {
@@ -21,7 +22,7 @@ const Home = ({ user, setUser }) => {
     // Function to fetch all messages from the backend
     const fetchMessages = async () => {
         try {
-            const res = await fetch('http://localhost:8080/messages', {
+            const res = await fetch(`${apiBase}/messages`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });

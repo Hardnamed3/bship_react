@@ -3,7 +3,7 @@
   <head>
     <meta
     http-equiv="Content-Security-Policy"
-    content="default-src 'self'; connect-src 'self' http://localhost http://localhost:8080 http://localhost:8081; style-src 'self' 'unsafe-inline'"
+    content="default-src 'self'; connect-src 'self' %VITE_API_BASE_URL%; style-src 'self' 'unsafe-inline'"
     />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
