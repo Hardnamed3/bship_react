@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import homeStyles from '../styles/Home.module.css';
 import PropTypes from "prop-types";
 import { apiBase } from '../config/api.js';
+import {NavBar} from "../components/navigation/NavBar.jsx";
 
 const Home = ({ user, setUser }) => {
     Home.propTypes = {
@@ -43,27 +44,7 @@ const Home = ({ user, setUser }) => {
     return (
         <div>
             <h1>Welcome</h1>
-            {!isLoggedIn ? (
-                <div>
-                    <Link to="/login">
-                        <button className={homeStyles.button}>Login</button>
-                    </Link>
-                    <Link to="/register">
-                        <button className={homeStyles.button}>Register</button>
-                    </Link>
-                </div>
-            ) : (
-                <div>
-                    <button className={homeStyles.button} onClick={handleLogout}>Logout</button>
-                    <Link to="/messages">
-                        <button className={homeStyles.button}>Messages</button>
-                    </Link>
-                    <Link to="/profile">
-                        <button className={homeStyles.button}>Profile</button>
-                    </Link>
-                </div>
-            )}
-
+            <NavBar />
             <h2>All Messages</h2>
             <ul className={homeStyles.list}>
                 {messages.map((msg) => (

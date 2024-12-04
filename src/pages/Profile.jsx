@@ -1,14 +1,12 @@
 import React, {useState} from 'react';
-import PropTypes from "prop-types";
 import {useNavigate} from "react-router-dom";
 import {apiBase} from "../config/api.js";
+import {NavBar} from "../components/navigation/NavBar.jsx";
+import {useAuth0} from "@auth0/auth0-react";
 
-const Profile = ({ user, setUser }) => {
-    Profile.propTypes = {
-        setUser: PropTypes.func.isRequired,
-        user: PropTypes.object.isRequired
-    };
-    const [profile, setProfile] = useState({ username: user.username, email: user.email });
+const Profile = () => {
+    const { user } = useAuth0();
+
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
@@ -16,6 +14,15 @@ const Profile = ({ user, setUser }) => {
         console.log("User not logged in.");
         navigate('/');
     }
+    const [profile, setProfile] = useState({ username: user.nickname, email: user.email });
+    const setUser = (user) => {
+        setProfile({ username: user.nickname, email: user.email });
+    }
+    console.log("profile for page is:",profile);
+    console.log("user from auth0 is:", user);
+
+
+
 
     const handleUpdate = async (e) => {
         e.preventDefault();
@@ -65,7 +72,8 @@ const Profile = ({ user, setUser }) => {
     return (
         <div>
             <h1>Profile</h1>
-            <p>Username: {user.username}</p>
+            <NavBar />
+            <p>Username: {user.nickname}</p>
             <p>Email: {user.email}</p>
             <form onSubmit={handleUpdate}>
                 <input

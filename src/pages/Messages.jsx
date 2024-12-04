@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {useNavigate} from "react-router-dom";
 import {apiBase} from "../config/api.js";
+import {NavBar} from "../components/navigation/NavBar.jsx";
 
 const Messages = ({ user }) => {
     Messages.propTypes = {
@@ -128,6 +129,7 @@ const Messages = ({ user }) => {
     return (
         <div>
             <h1>Your Messages</h1>
+            <NavBar />
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
             {/* Create New Message */}

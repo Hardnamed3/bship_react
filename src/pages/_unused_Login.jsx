@@ -1,38 +1,43 @@
 import React, {useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import PropTypes from "prop-types";
 import {apiBase} from "../config/api.js";
 
-const Register = () => {
+const _unused_Login = ({ setUser }) => {
+    _unused_Login.propTypes = {
+        setUser: PropTypes.func.isRequired,
+    };
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    //const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
-    const handleRegister = async (e) => {
+    const navigate = useNavigate();
+    const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${apiBase}/users`, {
+            const res = await fetch(`${apiBase}/users/login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                //body: JSON.stringify({username, email, password}),
-                body: JSON.stringify({username, email}),
+                //body: JSON.stringify({username, password}),
+                body: JSON.stringify({username}),
             });
             const data = await res.json();
             if (res.ok) {
-                setErrorMessage('Registration successful!');
+                //console.log("Received JSON: ", data);
+                setUser({userId: data.id, username: data.username, email: data.email});
+                navigate('/');
             } else {
-                setErrorMessage(data.message || 'Registration failed.');
+                setErrorMessage(data.message || '_unused_Login failed.');
             }
         } catch (error) {
-            console.error('Registration error:', error);
+            console.error('_unused_Login error:', error);
             setErrorMessage('Failed to connect to the server.');
         }
     };
 
     return (
         <div>
-            <h1>Register</h1>
-            <form onSubmit={handleRegister}>
+            <h1>Login</h1>
+            <form onSubmit={handleLogin}>
                 <input
                     type="text"
                     placeholder="Username"
@@ -40,25 +45,18 @@ const Register = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                 />
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
+                {/*<input
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                />
-                <button type="submit">Register</button>
+                />*/}
+                <button type="submit">Login</button>
             </form>
             {errorMessage && <p>{errorMessage}</p>}
         </div>
     );
 };
 
-export default Register;
+export default _unused_Login;
