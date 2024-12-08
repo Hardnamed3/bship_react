@@ -15,6 +15,8 @@ const Home = ({ user, setUser }) => {
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
 
+    console.log("User is:", user)
+
     // Fetch messages when the component loads
     useEffect(() => {
         fetchMessages();

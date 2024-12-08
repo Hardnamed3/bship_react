@@ -26,8 +26,8 @@ const App = () => {
     return (
         <Routes>
             <Route path="/" element={<Home user={user}  setUser={setUser}/>} />
-            <Route path="/register" element={<_unused_Register />} />
-            <Route path="/login" element={<_unused_Login setUser={setUser} />} />
+            {/*<Route path="/register" element={<_unused_Register />} />*/}
+            {/*<Route path="/login" element={<_unused_Login setUser={setUser} />} />*/}
             <Route
                 path="/messages"
                 element={
