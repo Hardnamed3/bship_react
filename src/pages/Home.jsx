@@ -1,23 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import homeStyles from '../styles/Home.module.css';
-import PropTypes from "prop-types";
 import { apiBase } from '../config/api.js';
 import {NavBar} from "../components/navigation/NavBar.jsx";
 
-const Home = ({ user, setUser }) => {
-    Home.propTypes = {
-        setUser: PropTypes.func.isRequired,
-        user: PropTypes.object,
-    };
-
-    const isLoggedIn = !!user;
+const Home = () => {
     const [messages, setMessages] = useState([]);
-    const navigate = useNavigate();
 
-    console.log("User is:", user)
-
-    // Fetch messages when the component loads
     useEffect(() => {
         fetchMessages();
     }, []);
@@ -38,10 +26,6 @@ const Home = ({ user, setUser }) => {
         }
     };
 
-    const handleLogout = () => {
-        setUser(null); // Clear user state
-        navigate('/');
-    };
 
     return (
         <div>

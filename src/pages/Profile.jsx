@@ -3,31 +3,32 @@ import {useNavigate} from "react-router-dom";
 import {apiBase} from "../config/api.js";
 import {NavBar} from "../components/navigation/NavBar.jsx";
 import {useAuth0} from "@auth0/auth0-react";
+import {useUserDataContext} from "../user-context-provider.jsx";
 
 const Profile = () => {
-    const { user } = useAuth0();
+    const { user, logout: auth0Logout} = useAuth0();
+    const {userData, updateUser, logout: contextLogout} = useUserDataContext();
 
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    if (!user) {
+    if (!userData) {
         console.log("User not logged in.");
         navigate('/');
     }
-    const [profile, setProfile] = useState({ username: user.nickname, email: user.email });
-    const setUser = (user) => {
-        setProfile({ username: user.nickname, email: user.email });
-    }
+    const [profile, setProfile] = useState({ username: userData?.username || user.nickname, email: userData?.email || user.email });
+
     console.log("profile for page is:",profile);
     console.log("user from auth0 is:", user);
+    console.log("userData is:", userData);
 
 
 
-
+    //currently not functional with auth0
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${apiBase}/users/${user.userId}`, {
+            const res = await fetch(`${apiBase}/users/${userData.id}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(profile),
@@ -35,7 +36,7 @@ const Profile = () => {
             const data = await res.json();
             if (res.ok) {
                 console.log("Received JSON: ", data);
-                setUser({userId: data.id, username: data.username, email: data.email});
+                updateUser(data);
                 setErrorMessage('Profile updated successfully.');
             } else {
                 setErrorMessage('Profile update failed.');
@@ -48,7 +49,7 @@ const Profile = () => {
 
     const handleDelete = async () => {
         try {
-            const res = await fetch(`${apiBase}/users/${user.userId}`, {
+            const res = await fetch(`${apiBase}/users/${userData.id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -65,16 +66,20 @@ const Profile = () => {
     };
 
     const handleLogout = () => {
-        setUser(null); // Clear user state
-        navigate('/');
+        contextLogout();
+        auth0Logout({
+            logoutParams: {
+                returnTo: window.location.origin,
+            },
+        });
     };
 
     return (
         <div>
             <h1>Profile</h1>
             <NavBar />
-            <p>Username: {user.nickname}</p>
-            <p>Email: {user.email}</p>
+            <p>Username: {profile.username}</p>
+            <p>Email: {profile.email}</p>
             <form onSubmit={handleUpdate}>
                 <input
                     type="text"

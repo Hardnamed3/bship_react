@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from "prop-types";
 import {useNavigate} from "react-router-dom";
 import {apiBase} from "../config/api.js";
 import {NavBar} from "../components/navigation/NavBar.jsx";
+import {useUserDataContext} from "../user-context-provider.jsx";
 
-const Messages = ({ user }) => {
-    Messages.propTypes = {
-        user: PropTypes.object.isRequired
-    };
+const Messages = () => {
+    const { userData } = useUserDataContext();
 
     const [messages, setMessages] = useState([]);
     const [editingMessageId, setEditingMessageId] = useState(null);
@@ -17,20 +15,20 @@ const Messages = ({ user }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    if (!user) {
+    if (!userData) {
         console.log("User not logged in.");
         navigate('/');
     }
 
     useEffect(() => {
-        if (user) {
+        if (userData) {
             fetchMessages();
         }
-    }, [user]);
+    }, [userData]);
 
     const fetchMessages = async () => {
         try {
-            const res = await fetch(`${apiBase}/messages/user/${user.userId}`, {
+            const res = await fetch(`${apiBase}/messages/user/${userData.id}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -57,7 +55,7 @@ const Messages = ({ user }) => {
             const res = await fetch(`${apiBase}/messages`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: newMessageContent, user_id: user.userId }),
+                body: JSON.stringify({ message: newMessageContent, user_id: userData.id }),
             });
 
             if (!res.ok) {
@@ -83,7 +81,7 @@ const Messages = ({ user }) => {
             const res = await fetch(`${apiBase}/messages/${editingMessageId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: editMessageContent, user_id: user.userId }),
+                body: JSON.stringify({ message: editMessageContent, user_id: userData.id }),
             });
 
             if (!res.ok) {

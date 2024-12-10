@@ -1,11 +1,14 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
+import {useUserDataContext} from "../../user-context-provider.jsx";
 
 export const LogoutButton = () => {
-    const { logout } = useAuth0();
+    const { logout: auth0Logout } = useAuth0();
+    const { logout: contextLogout  } = useUserDataContext();
 
     const handleLogout = () => {
-        logout({
+        contextLogout();
+        auth0Logout({
             logoutParams: {
                 returnTo: window.location.origin,
             },
