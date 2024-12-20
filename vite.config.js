@@ -12,4 +12,5 @@ export default defineConfig({
       threshold: 10240,    // Only compress files larger than 10kb
     }),
   ],
+  base : './',
 })
