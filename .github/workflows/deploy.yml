@@ -21,3 +21,32 @@ jobs:
         USERNAME=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
         docker build -t ghcr.io/$USERNAME/bship-react:latest .
         docker push ghcr.io/$USERNAME/bship-react:latest
+        
+# Step 4: Set up Google Cloud Auth
+    - name: Set up Google Cloud Auth
+      uses: google-github-actions/auth@v2
+      with:
+        project_id: operating-ethos-445009-n6
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+# Step 5: Set up Google Cloud SDK
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: operating-ethos-445009-n6
+
+# Step 5.5: Authenticate kubectl with GKE
+    - name: Install Authenticator
+      run: gcloud components install gke-gcloud-auth-plugin
+
+# Step 6: Authenticate kubectl with GKE
+    - name: Authenticate kubectl
+      run: gcloud container clusters get-credentials bship-cluster --zone europe-west1-b --project operating-ethos-445009-n6
+
+# Step 7: Deploy to GKE
+    - name: Deploy to GKE
+      run: |
+        USERNAME=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+        kubectl set image deployment/frontend \
+          bship-react=ghcr.io/$USERNAME/bship-react:latest
+        kubectl rollout status deployment/frontend
