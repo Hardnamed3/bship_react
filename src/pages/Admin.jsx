@@ -4,13 +4,12 @@ import {apiBase} from "../config/api.js";
 import {NavBar} from "../components/navigation/NavBar.jsx";
 import {useUserDataContext} from "../user-context-provider.jsx";
 
-const Messages = () => {
+const Admin = () => {
     const { userData } = useUserDataContext();
 
-    const [messages, setMessages] = useState([]);
-    const [editingMessageId, setEditingMessageId] = useState(null);
-    const [editMessageContent, setEditMessageContent] = useState('');
-    const [newMessageContent, setNewMessageContent] = useState('');
+    const [users, setUsers] = useState([]);
+    const [editingUserId, setEditingUserId] = useState(null);
+    const [editUserName, setEditUserName] = useState('');
 
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
@@ -22,13 +21,13 @@ const Messages = () => {
 
     useEffect(() => {
         if (userData) {
-            fetchMessages();
+            fetchUsers();
         }
     }, [userData]);
 
-    const fetchMessages = async () => {
+    const fetchUsers = async () => {
         try {
-            const res = await fetch(`${apiBase}/messages/user/${userData.id}`, {
+            const res = await fetch(`${apiBase}/users`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -38,76 +37,54 @@ const Messages = () => {
             }
 
             const data = await res.json();
+            console.log("Received JSON: ", data);
             if (data && data.length > 0) {
-                setMessages(data);
+                setUsers(data);
             } else {
-                throw new Error(`Error no messages found`);
+                throw new Error(`Error: No users found.`);
             }
         } catch (error) {
-            console.error('Failed to fetch messages:', error);
-            setErrorMessage('Failed to load messages.');
+            console.error('Failed to fetch users:', error);
+            setErrorMessage('Failed to load users.');
         }
     };
 
-
-    const handleCreateMessage = async () => {
-        try {
-            const res = await fetch(`${apiBase}/messages`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: newMessageContent, user_id: userData.id }),
-            });
-
-            if (!res.ok) {
-                throw new Error(`Error: ${res.status}`);
-            }
-
-            const createdMessage = await res.json();
-            setMessages([...messages, createdMessage]); // Add new message to the list
-            setNewMessageContent(''); // Clear the input field
-        } catch (error) {
-            console.error('Failed to create message:', error);
-            setErrorMessage('Failed to create the message.');
-        }
-    };
-
-    const startEditing = (message) => {
-        setEditingMessageId(message.id);
-        setEditMessageContent(message.message);
+    const startEditing = (user) => {
+        setEditingUserId(user.id);
+        setEditUserName(user.name);
     };
 
     const handleEdit = async () => {
         try {
-            const res = await fetch(`${apiBase}/messages/${editingMessageId}`, {
+            const res = await fetch(`${apiBase}/users/${editingUserId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: editMessageContent, user_id: userData.id }),
+                body: JSON.stringify({ name: editUserName, admin_id: userData.id }),
             });
 
             if (!res.ok) {
                 throw new Error(`Error: ${res.status}`);
             }
 
-            const updatedMessage = await res.json();
+            const updatedUser = await res.json();
 
-            // Update local state with the edited message
-            setMessages(
-                messages.map((msg) =>
-                    msg.id === editingMessageId ? { ...msg, message: updatedMessage.message } : msg
+            setUsers(
+                users.map((user) =>
+                    user.id === editingUserId ? { ...user, name: updatedUser.name } : user
                 )
             );
 
-            setEditingMessageId(null);
-            setEditMessageContent('');
+            setEditingUserId(null);
+            setEditUserName('');
         } catch (error) {
-            console.error('Failed to update message:', error);
-            setErrorMessage('Failed to update the message.');
+            console.error('Failed to update user:', error);
+            setErrorMessage('Failed to update the user.');
         }
     };
 
-    const handleDelete = async (messageId) => {
+    const handleDelete = async (userId) => {
         try {
-            const res = await fetch(`${apiBase}/messages/${messageId}`, {
+            const res = await fetch(`${apiBase}/users/${userId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -116,53 +93,42 @@ const Messages = () => {
                 throw new Error(`Error: ${res.status}`);
             }
 
-            // Refresh messages after deleting
-            setMessages(messages.filter((msg) => msg.id !== messageId));
+            setUsers(users.filter((user) => user.id !== userId));
         } catch (error) {
-            console.error('Failed to delete message:', error);
-            setErrorMessage('Failed to delete the message.');
+            console.error('Failed to delete user:', error);
+            setErrorMessage('Failed to delete the user.');
         }
     };
 
+
     return (
         <div>
-            <h1>Your Messages</h1>
+            <h1>Admin User Management</h1>
             <NavBar />
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-            {/* Create New Message */}
-            <div>
-                <input
-                    type="text"
-                    placeholder="Write a new message"
-                    value={newMessageContent}
-                    onChange={(e) => setNewMessageContent(e.target.value)}
-                />
-                <button onClick={handleCreateMessage}>Create</button>
-            </div>
-
-            {/* Existing message list */}
-            {messages.length === 0 ? (
-                <p>No messages to display.</p>
+            {/* Existing user list */}
+            {users.length === 0 ? (
+                <p>No users to display.</p>
             ) : (
                 <ul>
-                    {messages.map((msg) => (
-                        <li key={msg.id}>
-                            {editingMessageId === msg.id ? (
+                    {users.map((user) => (
+                        <li key={user.id}>
+                            {editingUserId === user.id ? (
                                 <div>
                                     <input
                                         type="text"
-                                        value={editMessageContent}
-                                        onChange={(e) => setEditMessageContent(e.target.value)}
+                                        value={editUserName}
+                                        onChange={(e) => setEditUserName(e.target.value)}
                                     />
                                     <button onClick={handleEdit}>Save</button>
-                                    <button onClick={() => setEditingMessageId(null)}>Cancel</button>
+                                    <button onClick={() => setEditingUserId(null)}>Cancel</button>
                                 </div>
                             ) : (
                                 <>
-                                    <span>{msg.message}</span>
-                                    <button onClick={() => startEditing(msg)}>Edit</button>
-                                    <button onClick={() => handleDelete(msg.id)}>Delete</button>
+                                    <span>{user.username}</span>
+                                    <button onClick={() => startEditing(user)}>Edit</button>
+                                    <button onClick={() => handleDelete(user.id)}>Delete</button>
                                 </>
                             )}
                         </li>
@@ -173,4 +139,4 @@ const Messages = () => {
     );
 };
 
-export default Messages;
+export default Admin;
