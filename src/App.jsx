@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home.jsx';
-import _unused_Register from './pages/_unused_Register.jsx';
-import _unused_Login from './pages/_unused_Login.jsx';
 import Messages from './pages/Messages.jsx';
 import Profile from './pages/Profile.jsx';
+import Admin from './pages/Admin.jsx';
 import { CallbackPage } from "./pages/callback-page.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
 import PageLoader from "./components/page-loader.jsx";
@@ -26,8 +25,6 @@ const App = () => {
     return (
         <Routes>
             <Route path="/" element={<Home user={user}  setUser={setUser}/>} />
-            {/*<Route path="/register" element={<_unused_Register />} />*/}
-            {/*<Route path="/login" element={<_unused_Login setUser={setUser} />} />*/}
             <Route
                 path="/messages"
                 element={
@@ -38,9 +35,11 @@ const App = () => {
                 element={
                     <AuthenticationGuard component={Profile} user={user} setUser={setUser} />
                 } />
-            {/*<Route
-                path="/profile"
-                element={<Profile user={user} setUser={setUser} />} />*/}
+            <Route
+                path="/admin"
+                element={
+                    <AuthenticationGuard component={Admin} user={user} setUser={setUser} />
+                } />
             <Route path="/callback" element={<CallbackPage />} />
         </Routes>
     );
