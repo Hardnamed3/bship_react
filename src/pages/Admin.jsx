@@ -3,8 +3,10 @@ import {useNavigate} from "react-router-dom";
 import {apiBase} from "../config/api.js";
 import {NavBar} from "../components/navigation/NavBar.jsx";
 import {useUserDataContext} from "../user-context-provider.jsx";
+import {useAuth0} from "@auth0/auth0-react";
 
 const Admin = () => {
+    const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const { userData } = useUserDataContext();
 
     const [users, setUsers] = useState([]);
@@ -20,16 +22,30 @@ const Admin = () => {
     }
 
     useEffect(() => {
-        if (userData) {
+        if (!isLoading && isAuthenticated && userData) {
             fetchUsers();
         }
-    }, [userData]);
+    }, [isAuthenticated, isLoading,userData]);
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch(`${apiBase}/users`, {
+
+            if (isLoading) {
+                return; // Still checking auth state
+            }
+
+            if (!isAuthenticated) {
+                throw new Error('Not authenticated');
+            }
+
+            const token = await getAccessTokenSilently();
+
+            const res = await fetch(`${apiBase}/users/scoped`, {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
             });
 
             if (!res.ok) {
@@ -37,7 +53,6 @@ const Admin = () => {
             }
 
             const data = await res.json();
-            console.log("Received JSON: ", data);
             if (data && data.length > 0) {
                 setUsers(data);
             } else {

@@ -37,7 +37,6 @@ export const CallbackPage = () => {
                         const enhancedUserData = {
                             ...data,
                             permissions,
-                            // Helper function to check permissions
                             isAdmin: permissions.includes("read:users"),
                         };
                         console.log("Updated JSON: ", enhancedUserData);
