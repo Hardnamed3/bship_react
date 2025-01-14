@@ -8,6 +8,7 @@ import { CallbackPage } from "./pages/callback-page.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
 import PageLoader from "./components/page-loader.jsx";
 import { AuthenticationGuard } from "./components/authentication-guard";
+import GDPRBanner from "./components/GDPR/banner.jsx";
 
 const App = () => {
     const [user, setUser] = useState(null); // State to hold user information
@@ -23,6 +24,8 @@ const App = () => {
     }
 
     return (
+        <div className="page-layout">
+        <GDPRBanner />
         <Routes>
             <Route path="/" element={<Home user={user}  setUser={setUser}/>} />
             <Route
@@ -42,6 +45,7 @@ const App = () => {
                 } />
             <Route path="/callback" element={<CallbackPage />} />
         </Routes>
+        </div>
     );
 };
 

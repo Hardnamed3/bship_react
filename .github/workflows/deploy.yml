@@ -19,6 +19,7 @@ jobs:
     - name: Build and Push Image
       run: |
         USERNAME=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+        COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)  # Shorten SHA to 7 characters
         docker build -t ghcr.io/$USERNAME/bship-react:latest .
         docker push ghcr.io/$USERNAME/bship-react:latest
         
@@ -47,6 +48,7 @@ jobs:
     - name: Deploy to GKE
       run: |
         USERNAME=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+        COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)  # Shorten SHA to 7 characters
         kubectl set image deployment/frontend \
           bship-react=ghcr.io/$USERNAME/bship-react:latest
         kubectl rollout status deployment/frontend
