@@ -20,8 +20,9 @@ jobs:
       run: |
         USERNAME=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
         COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)  # Shorten SHA to 7 characters
-        docker build -t ghcr.io/$USERNAME/bship-react:latest .
+        docker build -t ghcr.io/$USERNAME/bship-react:latest -t ghcr.io/$USERNAME/bship-react:$COMMIT_SHA .
         docker push ghcr.io/$USERNAME/bship-react:latest
+        docker push ghcr.io/$USERNAME/bship-react:$COMMIT_SHA
         
 # Step 4: Set up Google Cloud Auth
     - name: Set up Google Cloud Auth
